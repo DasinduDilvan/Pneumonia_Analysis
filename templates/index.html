@@ -68,24 +68,30 @@
         }
 
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            /* Changed from 2-column grid to single column layout */
+            display: flex;
+            flex-direction: column;
             gap: 2rem;
             margin-bottom: 2rem;
+            align-items: center;
         }
 
         .upload-section {
+            /* Made upload section smaller and centered */
             background: var(--bg-secondary);
             border-radius: 16px;
             padding: 2rem;
             border: 1px solid var(--border-color);
             box-shadow: 0 8px 32px var(--shadow);
+            max-width: 500px;
+            width: 100%;
         }
 
         .upload-area {
             border: 2px dashed var(--accent-secondary);
             border-radius: 12px;
-            padding: 3rem 2rem;
+            /* Reduced padding to make upload area smaller */
+            padding: 2rem 1.5rem;
             text-align: center;
             transition: all 0.3s ease;
             background: var(--bg-tertiary);
@@ -152,11 +158,14 @@
         }
 
         .results-section {
+            /* Made results section full width and positioned below upload */
             background: var(--bg-secondary);
             border-radius: 16px;
             padding: 2rem;
             border: 1px solid var(--border-color);
             box-shadow: 0 8px 32px var(--shadow);
+            width: 100%;
+            max-width: 800px;
         }
 
         .results-header {
@@ -290,8 +299,13 @@
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
+            /* Updated mobile styles for new layout */
+            .upload-section {
+                max-width: 100%;
+            }
+            
+            .results-section {
+                max-width: 100%;
             }
             
             .container {
