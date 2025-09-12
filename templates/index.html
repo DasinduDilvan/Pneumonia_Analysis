@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pneumonia X-Ray Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Updated to cool dark theme colors */
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #1a1f2e;
+            --bg-tertiary: #252b3d;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #0ea5e9;
+            --accent-tertiary: #06b6d4;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow: rgba(0, 212, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--accent-secondary);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .upload-text h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .upload-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .results-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+        }
+
+        .preview-container {
+            margin-bottom: 2rem;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+        }
+
+        .analysis-results {
+            display: block; /* Making results visible by default */
+        }
+
+        .result-item {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            /* Adding glow effect to make results more visible */
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            /* Adding hover effect for better visibility */
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .result-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            /* Making labels more prominent */
+            font-size: 1.1rem;
+        }
+
+        .confidence-bar {
+            background: var(--bg-primary);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .confidence-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Pneumonia X-Ray Analysis</h1>
+            <p>Advanced AI-powered pneumonia detection from chest X-ray images. Upload your X-ray for instant analysis.</p>
+        </header>
+
+        <main class="main-content">
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📋</div>
+                    <div class="upload-text">
+                        <h3>Upload X-Ray Image</h3>
+                        <p>Drag and drop your X-ray image here, or click to browse</p>
+                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                            Choose File
+                        </button>
+                    </div>
+                    <input type="file" id="fileInput" class="file-input" accept="image/*">
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+            </section>
+
+            <section class="results-section">
+                <div class="results-header">
+                    <div class="results-icon">🔬</div>
+                    <h2>Analysis Results</h2>
+                </div>
+
+                <div class="preview-container">
+                    <img id="imagePreview" class="image-preview" style="display: none;" alt="X-ray preview">
+                </div>
+
+                <div class="loading" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing X-ray image...</p>
+                </div>
+
+                <div class="analysis-results" id="analysisResults">
+                    <!-- Adding demo indicator -->
+                    <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--accent-primary); color: var(--accent-primary); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-weight: 500;">
+                        📊 Sample Analysis Results (Demo Mode)
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">🫁 Pneumonia Detection</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="pneumoniaConfidence" style="width: 85%"></div>
+                        </div>
+                        <div class="confidence-text" id="pneumoniaText">Pneumonia detected (85% confidence)</div>
+                    </div>
+
+                    <div class="result-item">
+                        <div class="result-label">📈 Overall Confidence</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="overallConfidence" style="width: 85%"></div>
+                        </div>
+                        <div class="confidence-text" id="overallText">85% confidence</div>
+                    </div>
+
+                    <div class="result-item" id="additionalFindings">
+                        <div class="result-label">🔍 Additional Findings</div>
+                        <div id="findingsText" class="confidence-text">Right lower lobe consolidation consistent with pneumonia. Recommend clinical correlation and follow-up imaging.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 Pneumonia X-Ray Analysis System. For medical research purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const loadingState = document.getElementById('loadingState');
+        const analysisResults = document.getElementById('analysisResults');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showError('File size must be less than 10MB.');
+                return;
+            }
+
+            hideMessages();
+            displayImage(file);
+            analyzeImage(file);
+        }
+
+        function displayImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function analyzeImage(file) {
+            showLoading();
+            
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                displayResults(result);
+                showSuccess('Analysis completed successfully!');
+            } catch (error) {
+                console.error('Analysis error:', error);
+                setTimeout(() => {
+                    const sampleResults = [
+                        {
+                            pneumonia_detected: true,
+                            confidence: 0.87,
+                            additional_findings: "Bilateral lower lobe consolidation consistent with pneumonia. Recommend follow-up in 2-3 weeks."
+                        },
+                        {
+                            pneumonia_detected: false,
+                            confidence: 0.92,
+                            additional_findings: "Clear lung fields. No acute findings detected."
+                        },
+                        {
+                            pneumonia_detected: true,
+                            confidence: 0.74,
+                            additional_findings: "Right middle lobe opacity suggestive of pneumonia. Mild pleural effusion noted."
+                        },
+                        {
+                            pneumonia_detected: false,
+                            confidence: 0.89,
+                            additional_findings: null
+                        },
+                        {
+                            pneumonia_detected: true,
+                            confidence: 0.95,
+                            additional_findings: "Extensive bilateral pneumonia with air bronchograms. Immediate medical attention recommended."
+                        }
+                    ];
+                    
+                    const randomResult = sampleResults[Math.floor(Math.random() * sampleResults.length)];
+                    displayResults(randomResult);
+                    showSuccess('Sample analysis completed! (Demo mode)');
+                }, 2000);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayResults(result) {
+            const pneumoniaConfidence = document.getElementById('pneumoniaConfidence');
+            const pneumoniaText = document.getElementById('pneumoniaText');
+            const overallConfidence = document.getElementById('overallConfidence');
+            const overallText = document.getElementById('overallText');
+            const additionalFindings = document.getElementById('additionalFindings');
+            const findingsText = document.getElementById('findingsText');
+
+            const confidencePercent = Math.round(result.confidence * 100);
+            
+            pneumoniaConfidence.style.width = `${confidencePercent}%`;
+            pneumoniaText.textContent = result.pneumonia_detected 
+                ? `Pneumonia detected (${confidencePercent}% confidence)`
+                : `No pneumonia detected (${confidencePercent}% confidence)`;
+
+            overallConfidence.style.width = `${confidencePercent}%`;
+            overallText.textContent = `${confidencePercent}% confidence`;
+
+            if (result.additional_findings) {
+                additionalFindings.style.display = 'block';
+                findingsText.textContent = result.additional_findings;
+            } else {
+                additionalFindings.style.display = 'none';
+            }
+
+            analysisResults.style.display = 'block';
+        }
+
+        function showLoading() {
+            loadingState.style.display = 'block';
+            analysisResults.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loadingState.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        window.addEventListener('load', () => {
+            analysisResults.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
