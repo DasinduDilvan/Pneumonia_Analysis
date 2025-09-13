@@ -6,573 +6,272 @@
     <title>Pneumonia X-Ray Analysis</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * {
+        *{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            /* Updated to cool dark theme colors */
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #1a1f2e;
-            --bg-tertiary: #252b3d;
-            --accent-primary: #00d4ff;
-            --accent-secondary: #0ea5e9;
-            --accent-tertiary: #06b6d4;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #64748b;
-            --border-color: #334155;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --shadow: rgba(0, 212, 255, 0.1);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .main-content {
-            /* Changed from 2-column grid to single column layout */
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #1a1f2e;
+            color: #f8fafc;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
-            margin-bottom: 2rem;
             align-items: center;
+            padding: 20px;
         }
-
-        .upload-section {
-            /* Made upload section smaller and centered */
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow);
-            max-width: 500px;
-            width: 100%;
+        .headermain{
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #38bdf8;
         }
-
-        .upload-area {
-            border: 2px dashed var(--accent-secondary);
-            border-radius: 12px;
-            /* Reduced padding to make upload area smaller */
-            padding: 2rem 1.5rem;
+        .titlemain{
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #e0e7ff;
             text-align: center;
-            transition: all 0.3s ease;
-            background: var(--bg-tertiary);
+            max-width: 600px;
+        }
+
+        .upload-section{
+            background-color: #374151;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(25, 155, 255, 0.3);
+        }
+        .upload-text h3{
+            margin-bottom: 5px;
+            color: #60a5fa;
+        }
+        .upload-text p{
+            margin-bottom: 15px;
+            color: #9ca3af;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2563eb;
+            color: white;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
-
-        .upload-area:hover {
-            border-color: var(--accent-primary);
-            background: rgba(0, 212, 255, 0.05);
-            transform: translateY(-2px);
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #10b981;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            transition: 1s;
         }
-
-        .upload-area.dragover {
-            border-color: var(--accent-primary);
-            background: rgba(0, 212, 255, 0.1);
-            transform: scale(1.02);
+        button:hover {
+            transition: 1s;
+            background-color: #059669;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         }
-
-        .upload-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1rem;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 50%;
-            display: flex;
+        #result, #confidence {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #confidence {
+            color: #fbbf24;
+        }
+        #result {
+            color: #34d399;
+        }
+        .result-item {
+            background-color: #374151;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 440px;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            color: white;
+            justify-items: center;
         }
-
-        .upload-text h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .upload-text p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .upload-btn {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
-        }
-
-        .results-section {
-            /* Made results section full width and positioned below upload */
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow);
-            width: 100%;
-            max-width: 800px;
-        }
-
+        
         .results-header {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 15px;
         }
-
         .results-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
-            border-radius: 50%;
+            font-size: 2em;
+            margin-right: 10px;
+        }
+        .preview-container {
+            width: 300px;
+            height: 300px;           /* fixed height */
+            border: 2px dashed #aaa;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 1rem;
-            color: white;
-        }
-
-        .preview-container {
-            margin-bottom: 2rem;
-        }
-
-        .image-preview {
-            width: 100%;
-            max-height: 300px;
-            object-fit: contain;
-            border-radius: 8px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-        }
-
-        .analysis-results {
-            display: block; /* Making results visible by default */
-        }
-
-        .result-item {
-            background: var(--bg-tertiary);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border-color);
-            /* Adding glow effect to make results more visible */
-            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .result-item:hover {
-            /* Adding hover effect for better visibility */
-            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .result-label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            /* Making labels more prominent */
-            font-size: 1.1rem;
-        }
-
-        .confidence-bar {
-            background: var(--bg-primary);
-            height: 8px;
-            border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 0.5rem;
-        }
-
-        .confidence-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
-            border-radius: 4px;
-            transition: width 0.8s ease;
-        }
-
-        .confidence-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--error);
-            color: var(--error);
-            padding: 1rem;
             border-radius: 8px;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-            padding: 1rem;
+            margin-top: 10px;
+        }       
+        .image-preview {
+            max-width: 100%;
+            max-height: 100%;     
+            object-fit: contain; 
             border-radius: 8px;
-            margin-top: 1rem;
-            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
         }
-
+        input[type="file"] {
+            width: auto;
+            height: auto;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 100%;
+            max-width: 300px;
+        }
+        .analysis_but {
+            background-color: #3b82f6;
+            justify-content: center;
+            align-items: center;
+            transition: 1s;
+        }
+        .analysis_but:hover {
+            background-color: #2563eb;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: 1s;
+        }
+        .social-links {
+            margin-top: 10px;
+        }
+        .social-link {
+            margin: 0 10px;
+            color: #6b7280;
+            text-decoration: none;
+        }
+        .social-link img {
+            width: 24px;
+            height: 24px;
+            filter: invert(70%) sepia(10%) saturate(500%) hue-rotate(180deg) brightness(90%) contrast(85%);
+            transition: filter 0.3s;
+        }
+        .social-link img:hover {
+            filter: invert(50%) sepia(100%) saturate(500%) hue-rotate(150deg) brightness(110%) contrast(120%);
+        }
         .footer {
-            text-align: center;
+            text-align: bottom;
             padding: 2rem 0;
             color: var(--text-muted);
             border-top: 1px solid var(--border-color);
             margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        @media (max-width: 768px) {
-            /* Updated mobile styles for new layout */
-            .upload-section {
-                max-width: 100%;
-            }
-            
-            .results-section {
-                max-width: 100%;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>Pneumonia X-Ray Analysis</h1>
-            <p>Advanced AI-powered pneumonia detection from chest X-ray images. Upload your X-ray for instant analysis.</p>
-        </header>
-
-        <main class="main-content">
-            <section class="upload-section">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">📋</div>
-                    <div class="upload-text">
-                        <h3>Upload X-Ray Image</h3>
-                        <p>Drag and drop your X-ray image here, or click to browse</p>
-                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                            Choose File
-                        </button>
-                    </div>
-                    <input type="file" id="fileInput" class="file-input" accept="image/*">
-                </div>
-                
-                <div class="error-message" id="errorMessage"></div>
-                <div class="success-message" id="successMessage"></div>
-            </section>
-
-            <section class="results-section">
-                <div class="results-header">
-                    <div class="results-icon">🔬</div>
-                    <h2>Analysis Results</h2>
-                </div>
-
-                <div class="preview-container">
-                    <img id="imagePreview" class="image-preview" style="display: none;" alt="X-ray preview">
-                </div>
-
-                <div class="loading" id="loadingState">
-                    <div class="loading-spinner"></div>
-                    <p>Analyzing X-ray image...</p>
-                </div>
-
-                <div class="analysis-results" id="analysisResults">
-                    <!-- Adding demo indicator -->
-                    <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid var(--accent-primary); color: var(--accent-primary); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-weight: 500;">
-                        📊 Sample Analysis Results (Demo Mode)
-                    </div>
-                    
-                    <div class="result-item">
-                        <div class="result-label">🫁 Pneumonia Detection</div>
-                        <div class="confidence-bar">
-                            <div class="confidence-fill" id="pneumoniaConfidence" style="width: 85%"></div>
-                        </div>
-                        <div class="confidence-text" id="pneumoniaText">Pneumonia detected (85% confidence)</div>
-                    </div>
-
-                    <div class="result-item">
-                        <div class="result-label">📈 Overall Confidence</div>
-                        <div class="confidence-bar">
-                            <div class="confidence-fill" id="overallConfidence" style="width: 85%"></div>
-                        </div>
-                        <div class="confidence-text" id="overallText">85% confidence</div>
-                    </div>
-
-                    <div class="result-item" id="additionalFindings">
-                        <div class="result-label">🔍 Additional Findings</div>
-                        <div id="findingsText" class="confidence-text">Right lower lobe consolidation consistent with pneumonia. Recommend clinical correlation and follow-up imaging.</div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <p>© 2024 Pneumonia X-Ray Analysis System. For medical research purposes only.</p>
-        </footer>
+    <br>
+    <h1 class="headermain">Pneumonia X-Ray Analysis</h1>
+    <br><br>
+    <h3 class="titlemain">AI-powered pneumonia detection from chest X-ray images. Upload your X-ray for instant analysis.</h3>
+    <br>
+    <div class="upload-section">
+                <div class="upload-text">
+                    <h3>Upload X-Ray Image</h3>
+                    <br>
+                    <p>Select your X-ray image here, or click to browse</p>
+                    <br>
+                    <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">
+                        Choose File
+                    </button>
+                    <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        </div>
+    </div>
+    <div class="result-section">
+        <div id="result"></div>
+        <div id="confidence"></div>
     </div>
 
-    <script>
+    <div class="result-item" id="resultItem" style="display: none;">
+        <div class="results-header">
+            <h2>Preview Image</h2>
+        </div>
+    
+        <div class="preview-container">
+            <br><br>
+            <center>
+                <img id="imagePreview" class="image-preview" alt="X-ray preview">
+            </center>
+        </div>
+        <br><center>
+        <button class="analysis_but" onclick="location.reload();">Analyse the image</button>
+        <br></center><br>
+    
+    </div> 
 
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const loadingState = document.getElementById('loadingState');
-        const analysisResults = document.getElementById('analysisResults');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
 
-        // Drag and drop functionality
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
+     <footer class="footer">
+            <p>© 2025 Pneumonia X-Ray Analysis System. For medical research purposes only.</p>
+            <div class="social-links">
+                <a href="https://github.com/DasinduDilvan/Pneumonia_Analysis" target="_blank" class="social-link">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
+                </a>
+                <a href="https://www.linkedin.com/in/dasindu-dilvan-13a696379/" target="_blank" class="social-link">
+                    <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn">
+                </a>
+            </div>
+        </footer>
 
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
+    
+        <script>
 
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
-        });
+            const fileInput = document.getElementById("fileInput");
+const imagePreview = document.getElementById("imagePreview");
+const resultItem = document.getElementById("resultItem");
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
-            }
-        });
+fileInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
 
-        function handleFile(file) {
-            if (!file.type.startsWith('image/')) {
-                showError('Please select a valid image file.');
-                return;
-            }
+    if (!file.type.startsWith("image/")) {
+        
+        this.value = "";    
+        imagePreview.src = "";   
+        resultItem.style.display = "none"; 
+        return;
+    }
 
-            if (file.size > 10 * 1024 * 1024) { // 10MB limit
-                showError('File size must be less than 10MB.');
-                return;
-            }
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        imagePreview.src = e.target.result;
+        resultItem.style.display = "block";
+    };
+    reader.readAsDataURL(file);
 
-            hideMessages();
-            displayImage(file);
-            analyzeImage(file);
-        }
+    // Send to backend
+    const formData = new FormData();
+    formData.append("file", file);
 
-        function displayImage(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
+    fetch("/upload", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Server response:", data);
+        // TODO: show prediction on the page later
+    })
+    .catch(error => console.error("Error:", error));
+});
 
-        async function analyzeImage(file) {
-            showLoading();
-            
-            const formData = new FormData();
-            formData.append('image', file);
 
-            try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                displayResults(result);
-                showSuccess('Analysis completed successfully!');
-            } catch (error) {
-                console.error('Analysis error:', error);
-                setTimeout(() => {
-                    const sampleResults = [
-                        {
-                            pneumonia_detected: true,
-                            confidence: 0.87,
-                            additional_findings: "Bilateral lower lobe consolidation consistent with pneumonia. Recommend follow-up in 2-3 weeks."
-                        },
-                        {
-                            pneumonia_detected: false,
-                            confidence: 0.92,
-                            additional_findings: "Clear lung fields. No acute findings detected."
-                        },
-                        {
-                            pneumonia_detected: true,
-                            confidence: 0.74,
-                            additional_findings: "Right middle lobe opacity suggestive of pneumonia. Mild pleural effusion noted."
-                        },
-                        {
-                            pneumonia_detected: false,
-                            confidence: 0.89,
-                            additional_findings: null
-                        },
-                        {
-                            pneumonia_detected: true,
-                            confidence: 0.95,
-                            additional_findings: "Extensive bilateral pneumonia with air bronchograms. Immediate medical attention recommended."
-                        }
-                    ];
-                    
-                    const randomResult = sampleResults[Math.floor(Math.random() * sampleResults.length)];
-                    displayResults(randomResult);
-                    showSuccess('Sample analysis completed! (Demo mode)');
-                }, 2000);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        function displayResults(result) {
-            const pneumoniaConfidence = document.getElementById('pneumoniaConfidence');
-            const pneumoniaText = document.getElementById('pneumoniaText');
-            const overallConfidence = document.getElementById('overallConfidence');
-            const overallText = document.getElementById('overallText');
-            const additionalFindings = document.getElementById('additionalFindings');
-            const findingsText = document.getElementById('findingsText');
-
-            const confidencePercent = Math.round(result.confidence * 100);
-            
-            pneumoniaConfidence.style.width = `${confidencePercent}%`;
-            pneumoniaText.textContent = result.pneumonia_detected 
-                ? `Pneumonia detected (${confidencePercent}% confidence)`
-                : `No pneumonia detected (${confidencePercent}% confidence)`;
-
-            overallConfidence.style.width = `${confidencePercent}%`;
-            overallText.textContent = `${confidencePercent}% confidence`;
-
-            if (result.additional_findings) {
-                additionalFindings.style.display = 'block';
-                findingsText.textContent = result.additional_findings;
-            } else {
-                additionalFindings.style.display = 'none';
-            }
-
-            analysisResults.style.display = 'block';
-        }
-
-        function showLoading() {
-            loadingState.style.display = 'block';
-            analysisResults.style.display = 'none';
-        }
-
-        function hideLoading() {
-            loadingState.style.display = 'none';
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            successMessage.style.display = 'none';
-        }
-
-        function showSuccess(message) {
-            successMessage.textContent = message;
-            successMessage.style.display = 'block';
-            errorMessage.style.display = 'none';
-        }
-
-        function hideMessages() {
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-        }
-
-        window.addEventListener('load', () => {
-            analysisResults.style.display = 'block';
-        });
-    </script>
+        </script>            
 </body>
 </html>
